@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manajemen User - Ticketing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-6">
+    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow-md">
+        <h2 class="text-xl font-semibold mb-4">Manajemen User</h2>
+        <button onclick="openModal()" class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4">Tambah User</button>
+
+        <table class="w-full border-collapse border border-gray-300">
+            <thead class="bg-gray-200">
+                <tr>
+                    <th class="border p-2">ID</th>
+                    <th class="border p-2">Nama</th>
+                    <th class="border p-2">Email</th>
+                    <th class="border p-2">Aksi</th>
+                </tr>
+            </thead>
+            <tbody id="userTable">
+                <!-- Data user akan ditambahkan di sini -->
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Form -->
+    <div id="userModal" class="fixed inset-0 flex items-center justify-center hidden bg-gray-800 bg-opacity-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h3 class="text-lg font-semibold mb-4" id="modalTitle">Tambah User</h3>
+            <input type="hidden" id="userId">
+            <div class="mb-2">
+                <label class="block text-sm font-medium">Nama</label>
+                <input type="text" id="userName" class="w-full p-2 border rounded">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium">Email</label>
+                <input type="email" id="userEmail" class="w-full p-2 border rounded">
+            </div>
+            <div class="flex justify-end space-x-2">
+                <button onclick="closeModal()" class="px-4 py-2 bg-gray-300 rounded">Batal</button>
+                <button onclick="saveUser()" class="px-4 py-2 bg-blue-500 text-white rounded">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let users = [];
+        let editingUserId = null;
+
+        function openModal(id = null) {
+            document.getElementById("userModal").classList.remove("hidden");
+            if (id !== null) {
+                editingUserId = id;
+                document.getElementById("modalTitle").innerText = "Edit User";
+                let user = users.find(u => u.id === id);
+                document.getElementById("userId").value = user.id;
+                document.getElementById("userName").value = user.name;
+                document.getElementById("userEmail").value = user.email;
+            } else {
+                editingUserId = null;
+                document.getElementById("modalTitle").innerText = "Tambah User";
+                document.getElementById("userName").value = "";
+                document.getElementById("userEmail").value = "";
+            }
+        }
+
+        function closeModal() {
+            document.getElementById("userModal").classList.add("hidden");
+        }
+
+        function saveUser() {
+            let name = document.getElementById("userName").value;
+            let email = document.getElementById("userEmail").value;
+
+            if (editingUserId === null) {
+                let newUser = { id: users.length + 1, name, email };
+                users.push(newUser);
+            } else {
+                let user = users.find(u => u.id === editingUserId);
+                user.name = name;
+                user.email = email;
+            }
+
+            updateTable();
+            closeModal();
+        }
+
+        function deleteUser(id) {
+            users = users.filter(u => u.id !== id);
+            updateTable();
+        }
+
+        function updateTable() {
+            let tableBody = document.getElementById("userTable");
+            tableBody.innerHTML = "";
+            users.forEach(user => {
+                let row = `<tr class="border">
+                    <td class="border p-2">${user.id}</td>
+                    <td class="border p-2">${user.name}</td>
+                    <td class="border p-2">${user.email}</td>
+                    <td class="border p-2">
+                        <button onclick="openModal(${user.id})" class="bg-yellow-500 text-white px-2 py-1 rounded">Edit</button>
+                        <button onclick="deleteUser(${user.id})" class="bg-red-500 text-white px-2 py-1 rounded">Hapus</button>
+                    </td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+    </script>
+</body>
+</html>
