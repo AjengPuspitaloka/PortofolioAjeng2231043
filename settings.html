@@ -7,84 +7,287 @@
     <link rel="stylesheet" href="styles.css">
     <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
 </head>
-<body>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Inter', sans-serif;
+    }
 
+    body {
+        display: flex;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #195da1 0%, #ffffff 100%);
+    }
+
+    .dashboard {
+        display: flex;
+        flex: 1;
+        position: relative;
+    }
+
+    /* Enhanced Sidebar */
+    .sidebar {
+        background: linear-gradient(180deg, #c4419a 0%, #8396cb 100%);
+        width: 280px;
+        padding: 2rem;
+        color: white;
+        position: fixed;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .sidebar .profile {
+        text-align: center;
+        margin-bottom: 2.5rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+    }
+
+    .sidebar h2 {
+        font-size: 1.5rem;
+        color: #fff;
+        font-weight: 600;
+    }
+
+    .nav-links {
+        list-style: none;
+        margin-top: 1rem;
+    }
+
+    .nav-links li {
+        margin: 0.75rem 0;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 1rem;
+        display: flex;
+        align-items: center;
+        padding: 0.875rem 1rem;
+        border-radius: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .nav-links a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        transform: translateX(5px);
+    }
+
+    .nav-links a i {
+        margin-right: 0.75rem;
+        width: 20px;
+    }
+
+    .active {
+        background: rgba(255, 255, 255, 0.15) !important;
+        color: white !important;
+    }
+
+    /* Enhanced Profile Container */
+    .profile-container {
+        margin-left: 280px;
+        padding: 3rem;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-card {
+        background: white;
+        padding: 3rem;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        width: 100%;
+        max-width: 600px;
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    .profile-pic {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid #de83f3;
+        padding: 4px;
+        margin-bottom: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .profile-pic:hover {
+        transform: scale(1.05);
+        border-color: #eb25d1;
+    }
+
+    .profile-card h2 {
+        color: #1e293b;
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+
+    .info {
+        color: #64748b;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1.5rem;
+        padding: 0.75rem 1.5rem;
+        background: #3b82f6;
+        color: white;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background: #2563eb;
+        transform: translateY(-2px);
+    }
+
+    .btn i {
+        margin-right: 0.5rem;
+    }
+
+    .edit-btn {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        background: #ef4444;
+        color: white;
+        border: none;
+        padding: 0.625rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .edit-btn:hover {
+        background: #dc2626;
+    }
+
+    /* Enhanced Edit Form */
+    .edit-step-one {
+        margin-top: 1.5rem;
+        color: #64748b;
+    }
+
+    .edit-step-two {
+        display: none;
+        margin-top: 2rem;
+        width: 100%;
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 0.875rem;
+        margin-bottom: 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        background: #f8fafc;
+    }
+
+    .input-field:focus {
+        border-color: #3b82f6;
+        background: white;
+        outline: none;
+    }
+
+    .input-field::placeholder {
+        color: #94a3b8;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1.5rem;
+    }
+
+    .save-btn {
+        background: #22c55e;
+    }
+
+    .save-btn:hover {
+        background: #16a34a;
+    }
+
+    .cancel-btn {
+        background: #f59e0b;
+    }
+
+    .cancel-btn:hover {
+        background: #d97706;
+    }
+
+    @media (max-width: 1024px) {
+        .sidebar {
+            width: 240px;
+        }
+        .profile-container {
+            margin-left: 240px;
+            padding: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .dashboard {
+            flex-direction: column;
+        }
+        .sidebar {
+            position: relative;
+            width: 100%;
+            height: auto;
+            padding: 1.5rem;
+        }
+        .profile-container {
+            margin-left: 0;
+            padding: 1.5rem;
+        }
+        .profile-card {
+            padding: 2rem;
+        }
+    }
+</style>
+</head>
+<body>
+<div class="dashboard">
     <aside class="sidebar">
+    
         <ul class="nav-links">
-            <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
-            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
-            <li><a href="location.html"><i class="fas fa-map-marker-alt"></i> Location</a></li>
-            <li><a href="settings.html"><i class="fas fa-cogs"></i> Settings</a></li>
-            <li><a href="logout.html" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            <li><a href="index.html"><i class="fas fa-home"></i>Dashboard</a></li>
+            <li><a href="profil.html" class="active"><i class="fas fa-user"></i>Profile</a></li>
+            <li><a href="PETA.HTML"><i class="fas fa-map"></i> Location</a></li>
+            <li><a href="settings.html"><i class="fas fa-cogs"></i>Settings</a></li>
+            <li><a href="logout.html"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
         </ul>
     </aside>
-    
-    <style>
-        .sidebar {
-            width: 250px;
-            height: 100vh;
-            background: linear-gradient(135deg, #8E2DE2, #FF416C);
-            color: white;
-            padding: 20px;
-            position: fixed;
-            left: 0;
-            top: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-    
-        .profile {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-    
-        .profile img {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 3px solid white;
-        }
-    
-        .profile h2, .profile p {
-            margin: 5px 0;
-        }
-    
-        .nav-links {
-            list-style: none;
-            padding: 0;
-            width: 100%;
-        }
-    
-        .nav-links li {
-            width: 100%;
-            margin: 10px 0;
-        }
-    
-        .nav-links a {
-            text-decoration: none;
-            color: white;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            padding: 10px 20px;
-            border-radius: 8px;
-            transition: background 0.3s;
-        }
-    
-        .nav-links a i {
-            margin-right: 10px;
-        }
-    
-        .nav-links a:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-    
-        .logout {
-            margin-top: auto;
-            color: #ffdddd;
-        }
-    </style>
+
 
         <!-- Main Content -->
         <main class="main-content">
@@ -193,10 +396,10 @@
     body {
         background-color: #ffffff;
         color: #333;
-        transition: background 0.3s, color 0.3s;
+        transition: all 0.3s, color 0.3s;
     }
     .sidebar {
-        background: #f4f4f4;
+        background: linear-gradient(180deg, #c4419a 0%, #8396cb 100%);
     }
     .main-content {
         background: #ffffff;
@@ -211,7 +414,7 @@
         color: #ffffff;
     }
     body.dark-mode .sidebar {
-        background: #1e1e1e;
+        background: linear-gradient(180deg, #c4419a 0%, #8396cb 100%);
     }
     body.dark-mode .main-content {
         background: #222;
