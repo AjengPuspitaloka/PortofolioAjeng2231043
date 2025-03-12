@@ -9,20 +9,82 @@
 </head>
 <body>
 
-    <div class="dashboard">
-        <!-- Sidebar Navigation -->
-        <aside class="sidebar">
-            <div class="profile">
-                <h2 data-lang="settings">Settings</h2>
-            </div>
-
-            <ul class="nav-links">
-                <li><a href="test.html"><i class="fas fa-home"></i> <span data-lang="dashboard">Dashboard</span></a></li>
-                <li><a href="profil.html"><i class="fas fa-user"></i> <span data-lang="profile">Profile</span></a></li>
-                <li><a href="settings.html" class="active"><i class="fas fa-cogs"></i> <span data-lang="settings">Settings</span></a></li>
-                <li><a href="logout.html" class="logout"><i class="fas fa-sign-out-alt"></i> <span data-lang="logout">Logout</span></a></li>
-            </ul>
-        </aside>
+    <aside class="sidebar">
+        <ul class="nav-links">
+            <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+            <li><a href="profile.html"><i class="fas fa-user"></i> Profile</a></li>
+            <li><a href="location.html"><i class="fas fa-map-marker-alt"></i> Location</a></li>
+            <li><a href="settings.html"><i class="fas fa-cogs"></i> Settings</a></li>
+            <li><a href="logout.html" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+        </ul>
+    </aside>
+    
+    <style>
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: linear-gradient(135deg, #8E2DE2, #FF416C);
+            color: white;
+            padding: 20px;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+    
+        .profile {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+    
+        .profile img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+        }
+    
+        .profile h2, .profile p {
+            margin: 5px 0;
+        }
+    
+        .nav-links {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+        }
+    
+        .nav-links li {
+            width: 100%;
+            margin: 10px 0;
+        }
+    
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+    
+        .nav-links a i {
+            margin-right: 10px;
+        }
+    
+        .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    
+        .logout {
+            margin-top: auto;
+            color: #ffdddd;
+        }
+    </style>
 
         <!-- Main Content -->
         <main class="main-content">
