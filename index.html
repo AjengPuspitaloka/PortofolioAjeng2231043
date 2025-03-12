@@ -1,215 +1,610 @@
-<?php
-session_start();
-include 'koneksi.php'; // Pastikan ada koneksi ke database
-
-// Ambil data pengguna dari database berdasarkan sesi
-$stmt = $conn->prepare("SELECT nama, email, role FROM users WHERE id = ?");
-$stmt->bind_param("i", $user_id); // "i" untuk tipe integer
-$stmt->execute();
-$result = $stmt->get_result();
-$user = $result->fetch_assoc();
-$stmt->close();
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Pelayanan PLN</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 font-sans leading-normal tracking-normal">
-    <div class="flex min-h-screen">
-        
-        <!-- Sidebar -->
-        <div class="w-64 bg-pink-500 p-6 text-white flex flex-col">
-            <div class="text-center mb-6">
-                <img src="profile.jpeg" alt="Profile" class="w-20 h-20 rounded-full mx-auto border-4 border-white">
-                <h3 class="text-lg font-semibold mt-2">Ajeng</h3>
-                <p class="text-sm">ADMIN</p>
-                <p class="text-xs text-gray-300">ajeng@gmail.com</p>
-            </div>
-            <nav class="flex-1">
-                <ul>
-                    <li class="mb-3"><a href="dashboard.php" class="block px-4 py-2 hover:bg-pink-400 rounded">Dashboard</a></li>
-                    <li class="mb-3"><a href="location.php" class="block px-4 py-2 hover:bg-pink-400 rounded">Location</a></li>
-                    <li class="mb-3"><a href="settings.php" class="block px-4 py-2 hover:bg-pink-400 rounded">Settings</a></li>
-                    <li class="mb-3"><a href="logout.php" class="block px-4 py-2 bg-red-500 hover:bg-red-600 rounded">Logout</a></li>
-                </ul>
-                <footer class="bg-gray-800 text-white py-6">
-        <div class="container mx-auto px-6 text-center">
-            <p>© <?= date('Y') ?> Dashboard Tim Support PLN. Dikembangkan untuk monitoring tim support.</p>
-        </div>
-    </footer>
-            </nav>
-        </div>
+    <title>IT Support Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
 
-        <!-- Main Content -->
-        <div class="flex-1 p-8">
-            <h1 class="text-3xl font-semibold mb-6">IT Support Dashboard</h1>
+        :root {
+            --primary-color: #2592eb;
+            --secondary-color: #3b82f6;
+            --background-light: #f8fafc;
+            --text-dark: #1e293b;
+            --sidebar-width: 280px;
+        }
+
+        body {
             
-            <!-- Card Statistik -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                <div class="bg-yellow-200 shadow-lg rounded-lg p-6 text-center">
-                    <h2 class="text-3xl font-bold">947</h2>
-                    <p class="text-gray-800">Total Tickets</p>
-                </div>
-                <div class="bg-green-200 shadow-lg rounded-lg p-6 text-center">
-                    <h2 class="text-3xl font-bold">19</h2>
-                    <p class="text-gray-800">STI</p>
-                </div>
-                <div class="bg-blue-200 shadow-lg rounded-lg p-6 text-center">
-                    <h2 class="text-3xl font-bold">128</h2>
-                    <p class="text-gray-800">Support</p>
-                </div>
-                <div class="bg-pink-200 shadow-lg rounded-lg p-6 text-center">
-                    <h2 class="text-3xl font-bold">5</h2>
-                    <p class="text-gray-800">Back Office</p>
-                </div>
-            </div>
+            background: var(--background-light);
+            color: var(--text-dark);
+            background-image: linear-gradient(135deg, #f0f7ff 0%, #ffffff 100%);
+            min-height: 100vh;
+        }
 
-            <!-- Recent Tickets Table -->
-            <div class="bg-white shadow-lg rounded-lg overflow-hidden">
-                <table class="w-full text-left border-collapse">
-                    <thead class="bg-gray-100 border-b">
-                        <tr>
-                            <th class="p-4">No</th>
-                            <th class="p-4">Type</th>
-                            <th class="p-4">Ticket ID</th>
-                            <th class="p-4">Location</th>
-                            <th class="p-4">User</th>
-                            <th class="p-4">Issue</th>
-                            <th class="p-4">Status</th>
-                            <th class="p-4">Open Time</th>
-                            <th class="p-4">Update Time</th>
-                            <th class="p-4">Close Time</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y">
-                    <tr onclick="viewTicket('1331960')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">1</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331960</td>
-            <td class="py-2 px-4 border-b">JAKARTA 1</td>
-            <td class="py-2 px-4 border-b">adriansyah.hendar</td>
-            <td class="py-2 px-4 border-b">Email Corporate</td>
-            <td class="py-2 px-4 border-b"><span class="bg-red-200 text-red-600 px-2 py-1 rounded-full">Assigned</span></td>
-            <td class="py-2 px-4 border-b">2:07:51</td>
-            <td class="py-2 px-4 border-b">2:22:48</td>
-            <td class="py-2 px-4 border-b">2:30:19</td>
-        </tr>
-        <tr onclick="viewTicket('1331961')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">2</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331961</td>
-            <td class="py-2 px-4 border-b">JAKARTA 2</td>
-            <td class="py-2 px-4 border-b">rachmat.suryadi</td>
-            <td class="py-2 px-4 border-b">System Crash</td>
-            <td class="py-2 px-4 border-b"><span class="bg-yellow-200 text-yellow-600 px-2 py-1 rounded-full">In Progress</span></td>
-            <td class="py-2 px-4 border-b">3:10:12</td>
-            <td class="py-2 px-4 border-b">3:25:34</td>
-            <td class="py-2 px-4 border-b">3:45:10</td>
-        </tr>
-        <tr onclick="viewTicket('1331962')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">3</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331962</td>
-            <td class="py-2 px-4 border-b">JAKARTA 3</td>
-            <td class="py-2 px-4 border-b">andy.pratama</td>
-            <td class="py-2 px-4 border-b">Login Issue</td>
-            <td class="py-2 px-4 border-b"><span class="bg-green-200 text-green-600 px-2 py-1 rounded-full">Resolved</span></td>
-            <td class="py-2 px-4 border-b">1:12:11</td>
-            <td class="py-2 px-4 border-b">1:50:25</td>
-            <td class="py-2 px-4 border-b">1:55:13</td>
-        </tr>
-        <tr onclick="viewTicket('1331963')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">4</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331963</td>
-            <td class="py-2 px-4 border-b">JAKARTA 1</td>
-            <td class="py-2 px-4 border-b">ivan.kurniawan</td>
-            <td class="py-2 px-4 border-b">Network Outage</td>
-            <td class="py-2 px-4 border-b"><span class="bg-red-200 text-red-600 px-2 py-1 rounded-full">Assigned</span></td>
-            <td class="py-2 px-4 border-b">5:05:23</td>
-            <td class="py-2 px-4 border-b">5:17:43</td>
-            <td class="py-2 px-4 border-b">5:30:10</td>
-        </tr>
-        <tr onclick="viewTicket('1331964')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">5</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331964</td>
-            <td class="py-2 px-4 border-b">JAKARTA 4</td>
-            <td class="py-2 px-4 border-b">susan.puspitasari</td>
-            <td class="py-2 px-4 border-b">Password Reset</td>
-            <td class="py-2 px-4 border-b"><span class="bg-green-200 text-green-600 px-2 py-1 rounded-full">Resolved</span></td>
-            <td class="py-2 px-4 border-b">6:11:45</td>
-            <td class="py-2 px-4 border-b">6:35:22</td>
-            <td class="py-2 px-4 border-b">6:50:03</td>
-        </tr>
-        <tr onclick="viewTicket('1331965')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">6</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331965</td>
-            <td class="py-2 px-4 border-b">JAKARTA 5</td>
-            <td class="py-2 px-4 border-b">leo.martin</td>
-            <td class="py-2 px-4 border-b">Network Slowdown</td>
-            <td class="py-2 px-4 border-b"><span class="bg-yellow-200 text-yellow-600 px-2 py-1 rounded-full">In Progress</span></td>
-            <td class="py-2 px-4 border-b">7:00:02</td>
-            <td class="py-2 px-4 border-b">7:30:15</td>
-            <td class="py-2 px-4 border-b">7:50:40</td>
-        </tr>
-        <tr onclick="viewTicket('1331966')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">7</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331966</td>
-            <td class="py-2 px-4 border-b">JAKARTA 6</td>
-            <td class="py-2 px-4 border-b">rino.rahardjo</td>
-            <td class="py-2 px-4 border-b">Printer Issue</td>
-            <td class="py-2 px-4 border-b"><span class="bg-green-200 text-green-600 px-2 py-1 rounded-full">Resolved</span></td>
-            <td class="py-2 px-4 border-b">8:05:11</td>
-            <td class="py-2 px-4 border-b">8:30:25</td>
-            <td class="py-2 px-4 border-b">8:55:38</td>
-        </tr>
-        <tr onclick="viewTicket('1331967')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">8</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331967</td>
-            <td class="py-2 px-4 border-b">JAKARTA 7</td>
-            <td class="py-2 px-4 border-b">mirza.dharmasena</td>
-            <td class="py-2 px-4 border-b">File Corruption</td>
-            <td class="py-2 px-4 border-b"><span class="bg-yellow-200 text-yellow-600 px-2 py-1 rounded-full">In Progress</span></td>
-            <td class="py-2 px-4 border-b">9:00:34</td>
-            <td class="py-2 px-4 border-b">9:30:40</td>
-            <td class="py-2 px-4 border-b">9:55:45</td>
-        </tr>
-        <tr onclick="viewTicket('1331968')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">9</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331968</td>
-            <td class="py-2 px-4 border-b">JAKARTA 8</td>
-            <td class="py-2 px-4 border-b">felix.hermawan</td>
-            <td class="py-2 px-4 border-b">Access Denied</td>
-            <td class="py-2 px-4 border-b"><span class="bg-red-200 text-red-600 px-2 py-1 rounded-full">Assigned</span></td>
-            <td class="py-2 px-4 border-b">10:02:56</td>
-            <td class="py-2 px-4 border-b">10:30:13</td>
-            <td class="py-2 px-4 border-b">10:55:59</td>
-        </tr>
-        <tr onclick="viewTicket('1331969')" class="hover:bg-gray-50 cursor-pointer">
-            <td class="py-2 px-4 border-b">10</td>
-            <td class="py-2 px-4 border-b">Incident</td>
-            <td class="py-2 px-4 border-b">1331969</td>
-            <td class="py-2 px-4 border-b">JAKARTA 9</td>
-            <td class="py-2 px-4 border-b">satria.purnama</td>
-            <td class="py-2 px-4 border-b">Server Down</td>
-            <td class="py-2 px-4 border-b"><span class="bg-green-200 text-green-600 px-2 py-1 rounded-full">Resolved</span></td>
-            <td class="py-2 px-4 border-b">11:11:12</td>
-            <td class="py-2 px-4 border-b">11:30:43</td>
-            <td class="py-2 px-4 border-b">11:55:08</td>
-        </tr>
-                    </tbody>
-                </table>
+        /* Improved Sidebar */
+        aside {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, #c4419a 0%, #8396cb 100%);
+            color: white;
+            padding: 2rem 1.5rem;
+            box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .profile-container {
+            text-align: center;
+            padding: 1.5rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-pic {
+            width: 155px;
+            height: 138px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.2);
+            padding: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .profile-container h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .info {
+            font-size: 0.875rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-links {
+            list-style: none;
+        }
+
+        .nav-links li a {
+            display: flex;
+            align-items: center;
+            padding: 0.875rem 1rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            border-radius: 0.5rem;
+            transition: all 0.3s ease;
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-links li a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-links li a i {
+            margin-right: 0.75rem;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+        }
+
+        header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            font-size: 1.75rem;
+            color: var(--text-dark);
+        }
+
+        .theme-toggle {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggle:hover {
+            background: var(--secondary-color);
+        }
+
+        /* Enhanced Stats Section */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .total-ticket::before { background: #3b82f6; }
+        .sti::before { background: #ef4444; }
+        .support::before { background: #10b981; }
+        .back-office::before { background: #8b5cf6; }
+
+        .stat-card h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-card p {
+            color: #64748b;
+            font-size: 1rem;
+        }
+
+        /* Table Improvements */
+        .table-section {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .table-section h2 {
+            margin-bottom: 1.5rem;
+            color: var(--text-dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th {
+            background: #f8fafc;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+        }
+
+        td {
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        .status {
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        .status.Assigned {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .status.InProgress {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .status.Resolved {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        /* Marquee styling */
+        .marquee {
+            background: #e13ebe;
+            color: white;
+            padding: 0.75rem;
+            margin-bottom: 2rem;
+            border-radius: 0.5rem;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            background: #1a1a1a;
+            color: #ffffff;
+        }
+
+        body.dark-mode .main-content {
+            background: #1a1a1a;
+        }
+
+        body.dark-mode header,
+        body.dark-mode .stat-card,
+        body.dark-mode .table-section {
+            background: #2d2d2d;
+            color: #ffffff;
+        }
+
+        body.dark-mode th {
+            background: #3d3d3d;
+            color: #ffffff;
+        }
+
+        body.dark-mode td {
+            border-top: 1px solid #3d3d3d;
+        }
+
+        body.dark-mode tbody tr:hover {
+            background: #3d3d3d;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            aside {
+                width: 100%;
+                height: auto;
+                position: relative;
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <aside>
+            <div class="profile-container">
+                <img src="/api/placeholder/120/120" alt="Profile Picture" class="profile-pic" id="profilePic">
+                <h2 id="userName">John Doe</h2>
+                <p class="info" id="userRole">ADMIN</p>
+                <p class="info" id="userEmail">johndoe@example.com</p>
             </div>
-        </div>
+            <ul class="nav-links">
+                <li><a href="index.html"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="profil.html"><i class="fas fa-user"></i> Profile</a></li>
+                <li><a href="PETA.HTML"><i class="fas fa-map"></i> Location</a></li>
+                <li><a href="settings.html"><i class="fas fa-cogs"></i> Settings</a></li>
+                <li><a href="logout.html"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1>IT Support Dashboard</h1>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </header>
+
+            <marquee behavior="scroll" direction="left" class="marquee">
+                <strong>INFO PLN:</strong> Pastikan Anda selalu membayar tagihan listrik tepat waktu untuk menghindari pemutusan layanan. Gunakan listrik secara bijak!
+            </marquee>
+
+            
+               <!-- Floating Notification -->
+               <div class="notification" id="notificationBell">
+                <i class="fas fa-bell"></i>
+                <span class="badge" id="notifCount">3</span>
+                
+            </div>
+            
+        
+            <div class="overlay" id="overlay"></div>
+            <div class="ticket-details" id="ticketDetails">
+                <span class="close" onclick="closeTicketDetails()">&times;</span>
+                <h2>Ticket Details</h2>
+                <div id="ticketContent"></div>
+            </div>
+        
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by Subject or Support">
+                <select id="statusFilter">
+                    <option value="">All Status</option>
+                    <option value="Assigned">Assigned</option>
+                    <option value="In Progress">In Progress</option>
+                    <option value="Resolved">Resolved</option>
+                </select>
+                <select id="teamFilter">
+                    <option value="">All Teams</option>
+                    <option value="JAKARTA 1">JAKARTA 1</option>
+                    <option value="JAKARTA 2">JAKARTA 2</option>
+                    <option value="JAKARTA 3">JAKARTA 3</option>
+                </select>
+            </div>
+        
+
+            <section class="stats">
+                <div class="stat-card total-ticket">
+                    <h2>947</h2>
+                    <p>Total Tickets</p>
+                </div>
+                <div class="stat-card sti">
+                    <h2>19</h2>
+                    <p>STI</p>
+                </div>
+                <div class="stat-card support">
+                    <h2>128</h2>
+                    <p>Support</p>
+                </div>
+                <div class="stat-card back-office">
+                    <h2>5</h2>
+                    <p>Back Office</p>
+                </div>
+            </section>
+
+            <section class="table-section">
+                <h2>Recent Tickets</h2>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Type</th>
+                                <th>ID</th>
+                                <th>Location</th>
+                                <th>Reported By</th>
+                                <th>Issue</th>
+                                <th>Status</th>
+                                <th>Reported Time</th>
+                                <th>Start Time</th>
+                                <th>Resolved Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr onclick="viewTicket('1331960')">
+                                <td>1</td><td>Incident</td><td>1331960</td><td>JAKARTA 1</td><td>adriansyah.hendar</td><td>Email Corporate</td>
+                                <td><span class="status Assigned">Assigned</span></td><td>2:07:51</td><td>2:22:48</td><td>2:30:19</td>
+                            </tr>
+                                    <tr onclick="viewTicket('1331961')">
+                                        <td>2</td><td>Incident</td><td>1331961</td><td>JAKARTA 2</td><td>rachmat.suryadi</td><td>System Crash</td>
+                                        <td><span class="status InProgress">In Progress</span></td><td>3:10:12</td><td>3:25:34</td><td>3:45:10</td>
+                                    </tr>
+                                    <tr onclick="viewTicket('1331962')">
+                                        <td>3</td><td>Incident</td><td>1331962</td><td>JAKARTA 3</td><td>andy.pratama</td><td>Login Issue</td>
+                                        <td><span class="status Resolved">Resolved</span></td><td>1:12:11</td><td>1:50:25</td><td>1:55:13</td>
+                                    </tr>
+                                    <tr onclick="viewTicket('1331963')">
+                                        <td>4</td><td>Incident</td><td>1331963</td><td>JAKARTA 1</td><td>ivan.kurniawan</td><td>Network Outage</td>
+                                        <td><span class="status Assigned">Assigned</span></td><td>5:05:23</td><td>5:17:43</td><td>5:30:10</td>
+                                    </tr>
+                                    <tr onclick="viewTicket('1331964')">
+                                        <td>5</td><td>Incident</td><td>1331964</td><td>JAKARTA 2</td><td>denny.santosa</td><td>Server Down</td>
+                                        <td><span class="status InProgress">In Progress</span></td><td>6:45:22</td><td>7:10:32</td><td>7:32:41</td>
+                                    </tr>
+                                    <tr onclick="viewTicket('1331965')">
+                                        <td>6</td><td>Incident</td><td>1331965</td><td>JAKARTA 3</td><td>susan.tan</td><td>Software Error</td>
+                                        <td><span class="status Resolved">Resolved</span></td><td>8:14:25</td><td>8:35:50</td><td>8:50:20</td>
+                                    </tr>
+                                    <tr onclick="viewTicket('1331966')">
+                                        <td>7</td><td>Incident</td><td>1331966</td><td>JAKARTA 1</td><td>fahmi.rizky</td><td>Database Connection</td>
+                                        <td><span class="status Assigned">Assigned</span></td><td>9:03:12</td><td>9:15:10</td><td>9:42:05</td>
+                                    </tr>
+                                    <tr onclick="viewTicket('1331967')">
+                                        <td>8</td><td>Incident</td><td>1331967</td><td>JAKARTA 2</td><td>firdaus.rahman</td><td>Hardware Failure</td>
+                                        <td><span class="status InProgress">In Progress</span></td><td>10:21:23</td><td>10:30:45</td><td>10:50:01</td>
+                                    </tr>
+                                    <tr onclick="viewTicket('1331968')">
+                                        <td>9</td><td>Incident</td><td>1331968</td><td>JAKARTA 3</td><td>linda.susanto</td><td>Authentication Issue</td>
+                                        <td><span class="status Resolved">Resolved</span></td><td>11:12:11</td><td>11:45:10</td><td>11:55:30</td>
+                                    </tr>
+                                    <tr onclick="viewTicket('1331969')">
+                                        <td>10</td><td>Incident</td><td>1331969</td><td>JAKARTA 1</td><td>hendra.juniadi</td><td>Data Loss</td>
+                                        <td><span class="status Assigned">Assigned</span></td><td>12:34:22</td><td>12:45:36</td><td>12:55:12</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                             
+                                                </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
     </div>
+
+    <script>
+  // Theme toggle and profile loading
+function toggleTheme() {
+    document.body.classList.toggle('dark-mode');
+}
+
+window.onload = function() {
+    const storedProfile = JSON.parse(localStorage.getItem('userProfile'));
+    if (storedProfile) {
+        document.getElementById('profilePic').src = storedProfile.profilePic || '/api/placeholder/120/120';
+        document.getElementById('userName').textContent = storedProfile.name || 'John Doe';
+        document.getElementById('userRole').textContent = storedProfile.role || 'ADMIN';
+        document.getElementById('userEmail').textContent = storedProfile.email || 'johndoe@example.com';
+    }
+};
+
+
+// Notification System
+let notifications = [
+    { id: 1, message: "New ticket #1331960 assigned", time: "2 minutes ago" },
+    { id: 2, message: "Ticket #1331961 requires attention", time: "5 minutes ago" },
+    { id: 3, message: "Ticket #1331962 has been resolved", time: "10 minutes ago" }
+];
+
+document.getElementById('notificationBell').addEventListener('click', function() {
+    let notifHtml = notifications.map(notif => 
+        `<div style="padding: 10px; border-bottom: 1px solid #eee">
+            <p>${notif.message}</p>
+            <small style="color: #666">${notif.time}</small>
+        </div>`
+    ).join('');
+    
+    document.getElementById('ticketContent').innerHTML = `
+        <h3>Notifications</h3>
+        ${notifHtml}
+    `;
+    
+    document.getElementById('ticketDetails').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+    document.getElementById('notifCount').textContent = '0';
+});
+
+// Search and Filter Functionality
+function filterTickets() {
+    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+    const statusFilter = document.getElementById('statusFilter').value;
+    const teamFilter = document.getElementById('teamFilter').value;
+    
+    const rows = document.querySelectorAll('tbody tr');
+    
+    rows.forEach(row => {
+        const issue = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
+        const status = row.querySelector('.status').textContent;
+        const location = row.querySelector('td:nth-child(4)').textContent;
+        
+        const matchesSearch = issue.includes(searchTerm);
+        const matchesStatus = !statusFilter || status === statusFilter;
+        const matchesTeam = !teamFilter || location === teamFilter;
+        
+        row.style.display = matchesSearch && matchesStatus && matchesTeam ? '' : 'none';
+    });
+}
+
+document.getElementById('searchInput').addEventListener('input', filterTickets);
+document.getElementById('statusFilter').addEventListener('change', filterTickets);
+document.getElementById('teamFilter').addEventListener('change', filterTickets);
+
+// Ticket Details View
+function viewTicket(ticketId) {
+    const row = event.currentTarget;
+    const cells = row.getElementsByTagName('td');
+    
+    const ticketDetails = {
+        id: ticketId,
+        type: cells[1].textContent,
+        location: cells[3].textContent,
+        reportedBy: cells[4].textContent,
+        issue: cells[5].textContent,
+        status: cells[6].textContent,
+        reportedTime: cells[7].textContent,
+        startTime: cells[8].textContent,
+        resolvedTime: cells[9].textContent
+    };
+    
+    document.getElementById('ticketContent').innerHTML = `
+        <div style="margin-bottom: 1rem">
+            <strong>Ticket ID:</strong> ${ticketDetails.id}<br>
+            <strong>Type:</strong> ${ticketDetails.type}<br>
+            <strong>Location:</strong> ${ticketDetails.location}<br>
+            <strong>Reported By:</strong> ${ticketDetails.reportedBy}<br>
+            <strong>Issue:</strong> ${ticketDetails.issue}<br>
+            <strong>Status:</strong> ${ticketDetails.status}<br>
+            <strong>Reported Time:</strong> ${ticketDetails.reportedTime}<br>
+            <strong>Start Time:</strong> ${ticketDetails.startTime}<br>
+            <strong>Resolved Time:</strong> ${ticketDetails.resolvedTime}
+        </div>
+        <button onclick="updateTicketStatus('${ticketId}')" style="padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 0.25rem; cursor: pointer;">
+            Update Status
+        </button>
+    `;
+    
+    document.getElementById('ticketDetails').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+}
+
+function closeTicketDetails() {
+    document.getElementById('ticketDetails').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
+}
+
+function updateTicketStatus(ticketId) {
+    const statusSelect = `
+        <select id="newStatus" style="margin-right: 1rem; padding: 0.5rem">
+            <option value="Assigned">Assigned</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Resolved">Resolved</option>
+        </select>
+        <button onclick="saveStatus('${ticketId}')" style="padding: 0.5rem 1rem; background: #2563eb; color: white; border: none; border-radius: 0.25rem; cursor: pointer;">
+            Save
+        </button>
+    `;
+    
+    document.getElementById('ticketContent').innerHTML += `
+        <div style="margin-top: 1rem">
+            <h4>Update Status:</h4>
+            ${statusSelect}
+        </div>
+    `;
+}
+
+function saveStatus(ticketId) {
+    const newStatus = document.getElementById('newStatus').value;
+    const row = document.querySelector(`tr[onclick="viewTicket('${ticketId}')"]`);
+    const statusCell = row.querySelector('.status');
+    
+    statusCell.textContent = newStatus;
+    statusCell.className = `status ${newStatus.replace(' ', '')}`;
+    
+    closeTicketDetails();
+    
+    // Add notification
+    notifications.unshift({
+        id: notifications.length + 1,
+        message: `Ticket #${ticketId} status updated to ${newStatus}`,
+        time: "Just now"
+    });
+    
+    document.getElementById('notifCount').textContent = parseInt(document.getElementById('notifCount').textContent) + 1;
+}
+
+// Close modal when clicking overlay
+document.getElementById('overlay').addEventListener('click', closeTicketDetails);
+    </script>
+    
 </body>
 </html>
